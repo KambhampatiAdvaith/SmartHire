@@ -1,7 +1,7 @@
 "use client";
 
-import AlertConfirmation from "@/app/_components/AlertConfirmation";
-import TimerComponent from "@/app/_components/TimerComponent";
+//import AlertConfirmation from "@/app/_components/AlertConfirmation";
+//import TimerComponent from "@/app/_components/TimerComponent";
 import { useUser } from "@/app/provider";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/services/supabaseClient";
