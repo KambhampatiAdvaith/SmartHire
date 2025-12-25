@@ -22,7 +22,7 @@ SmartHire is an AI-powered recruitment platform designed to simplify hiring, eva
 | **Frontend** | HTML, CSS, JavaScript *(Update if needed)* |
 | **Backend** | Python / Flask *(Update if needed)* |
 | **Machine Learning / AI** | NLP, Transformer Models *(Update if needed)* |
-| **Database** | MySQL *(Update if needed)* |
+| **Database** | Supabase *(Update if needed)* |
 | **Tools** | Git, VS Code |
 
 ---
