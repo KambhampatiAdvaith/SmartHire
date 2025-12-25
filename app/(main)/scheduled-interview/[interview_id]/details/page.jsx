@@ -82,7 +82,7 @@ function StartInterview() {
       ]);
 
       toast.success("Interview completed");
-      router.replace(`/interview/${interview_id}/completed`);
+      router.replace(`/scheduled-interview/${interview_id}/completed`);
     } catch {
       toast.error("Feedback generation failed");
     } finally {
@@ -90,19 +90,63 @@ function StartInterview() {
     }
   };
 
-  const startCall = () => {
-    if (!vapi.current || !interviewInfo) return;
-    setLoading(true);
+const startCall = () => {
+  if (!vapi.current || !interviewInfo) {
+    toast.error("Interview data missing");
+    return;
+  }
 
-    try {
-      vapi.current.start({ name: "AI Recruiter" });
-      setHasInterviewStarted(true);
-    } catch {
-      toast.error("Failed to start interview");
-    } finally {
-      setLoading(false);
+  const jobRole = interviewInfo?.interviewData?.jobPosition;
+  const questions = interviewInfo?.interviewData?.questionList;
+
+  if (!jobRole || !questions || questions.length === 0) {
+    toast.error("No role-based questions found");
+    return;
+  }
+
+  const questionList = questions.map(q => q.question).join(", ");
+
+  const assistantOptions = {
+    name: "AI Recruiter",
+    firstMessage: `Hi ${interviewInfo.userName}, welcome to your ${jobRole} interview. Let's begin.`,
+    model: {
+      provider: "openai",
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: `
+ROLE: ${jobRole}
+
+You are an AI interviewer.
+Ask ONLY interview questions related to the ROLE above.
+
+Use the following questions:
+${questionList}
+
+Rules:
+- Ask ONE question at a time
+- Wait for candidate answer
+- Do NOT ask generic questions
+- Stay strictly within the role
+          `.trim()
+        }
+      ]
     }
   };
+
+  setLoading(true);
+  try {
+    vapi.current.start(assistantOptions);
+    setHasInterviewStarted(true);
+    toast.success("Interview started");
+  } catch (e) {
+    toast.error("Failed to start interview");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const stopInterview = () => {
     vapi.current?.stop();
